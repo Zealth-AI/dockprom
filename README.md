@@ -1,3 +1,9 @@
+# Logging And Metrics For Disha-Backend
+
+The repository contains important metric programs to be used by Disha-backend services.
+
+NOTE: pm2-metrics is required to be running with pm2 to use this module
+
 dockprom
 ========
 
