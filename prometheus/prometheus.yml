@@ -40,8 +40,7 @@ scrape_configs:
     metrics_path: /metrics
     scheme: http
     static_configs:
-      - targets:
-          - ['host.docker.internal:9209']
+      - targets: ['host.docker.internal:9209']
 
 
 alerting:

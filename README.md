@@ -4,6 +4,15 @@ The repository contains important metric programs to be used by Disha-backend se
 
 NOTE: pm2-metrics is required to be running with pm2 to use this module
 
+## Instructions To Setup
+
+For setting this up on a server with pm2 running the disha services, the following steps are required to be followed.
+
+0. [Install pm2-metrics](https://www.npmjs.com/package/pm2-metrics) for pm2
+0. [Install docker-engine](https://docs.docker.com/engine/install/)
+0. [Install docker-compose](https://docs.docker.com/compose/install/)
+0. Follow the below instructions as per the official documentation
+
 dockprom
 ========
 
