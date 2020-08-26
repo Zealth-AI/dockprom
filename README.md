@@ -19,6 +19,8 @@ For setting this up on a server with pm2 running the disha services, the followi
   - prom.backend.zealthlife.com : prometheus on backend
   - grafana.backend.zealthlife.com : grafana on staging
 
+The management of the service is using docker on the production and staging machines.
+
 NOTE: When redeploying, please stash and reapply stash to maintain the prometheus.yml or change the settings for pm2-metrics as per the 5th step above.
 
 dockprom
