@@ -11,7 +11,13 @@ For setting this up on a server with pm2 running the disha services, the followi
 0. [Install pm2-metrics](https://www.npmjs.com/package/pm2-metrics) for pm2
 0. [Install docker-engine](https://docs.docker.com/engine/install/)
 0. [Install docker-compose](https://docs.docker.com/compose/install/)
-0. Follow the below instructions as per the official documentation
+0. Follow the below instructions as per the official documentation below
+0. Setup Nginx for domain redirection - currently using the following domains:
+  - prom.staging.zealthlife.com : prometheus on staging
+  - grafana.staging.zealthlife.com : grafanan on staging
+  - prom.backend.zealthlife.com : prometheus on backend
+  - grafana.backend.zealthlife.com : grafana on staging
+
 
 dockprom
 ========
