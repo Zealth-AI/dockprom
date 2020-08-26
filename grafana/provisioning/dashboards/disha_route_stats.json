@@ -1027,7 +1027,7 @@
               "step": 2
             },
             {
-              "expr": "topk(10,max_over_time(http_request_duration_seconds_count{code=~\"^4..$\"}[6s])- min_over_time(http_request_duration_seconds_count{code=~\"^4..$\"}[24h]))",
+              "expr": "topk(10,max_over_time(http_request_duration_seconds_count{status_code=~\"^[4,5]..$\"}[6s])- min_over_time(http_request_duration_seconds_count{status_code=~\"^[4,5]..$\"}[24h]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -1038,7 +1038,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 3 API Error Calls ( 5XX and 4XX, by path)",
+          "title": "Top 10 API Error Calls ( 5XX and 4XX, by path)",
           "tooltip": {
             "shared": true,
             "sort": 0,
