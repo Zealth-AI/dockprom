@@ -80,7 +80,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "api_all_request_total",
+              "expr": "sum(http_request_duration_seconds_count)",
               "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
@@ -156,7 +156,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "(\n  sum(irate(api_request_duration_milliseconds_bucket{le=\"25\",code=~\"^2..$\"}[1m]))\n+\n  (sum(irate(api_request_duration_milliseconds_bucket{le=\"100\",code=~\"^2..$\"}[1m])) / 2)\n) / sum(irate(api_request_duration_milliseconds_count[1m]))",
+              "expr": "(sum(http_request_duration_seconds_bucket{le=\"1.5\",status_code=~\"^2..$\"})+  (sum(http_request_duration_seconds_bucket{le=\"10\",status_code=~\"^2..$\"})/2)) / sum(http_request_duration_seconds_bucket)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -233,7 +233,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "( api_all_errors_total / api_all_request_total ) * 100",
+              "expr": "((sum (http_request_duration_seconds_count{status_code=~\"^5..$\"}) OR on () vector(0)) +  (sum (http_request_duration_seconds_count{status_code=~\"^4..$\"}) OR on () vector(0))/ sum (http_request_duration_seconds_count)) * 100",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -310,7 +310,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "api_all_request_in_processing_total",
+              "expr": "sum(max_over_time(graphql_resolver_time_count[6s])- min_over_time(graphql_resolver_time_count[24h]))",
               "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
@@ -318,7 +318,7 @@
             }
           ],
           "thresholds": "",
-          "title": "Requests in Processing",
+          "title": "GraphQL Requests In 24H",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -386,7 +386,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "nodejs_process_cpu_usage_percentage",
+              "expr": "sum(rate(pm2_cpu[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
@@ -463,7 +463,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "(nodejs_process_memory_heap_used_bytes)/1048576",
+              "expr": "(sum(pm2_memory)) / (sum(machine_memory_bytes))",
               "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
@@ -471,7 +471,7 @@
             }
           ],
           "thresholds": "",
-          "title": "Heap Used, Mb",
+          "title": "Memory",
           "transparent": false,
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -528,7 +528,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum (irate(api_request_total[1m]))",
+              "expr": "sum (irate(http_request_duration_seconds_count[1m]))",
               "format": "time_series",
               "intervalFactor": 4,
               "legendFormat": "Request Rate",
@@ -536,7 +536,7 @@
               "step": 4
             },
             {
-              "expr": "sum (irate(api_request_total{code=~\"^5..$\"}[1m]))",
+              "expr": "sum (irate(http_request_duration_seconds_count{status_code=~\"^5..$\"}[1m]))",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 4,
@@ -545,7 +545,7 @@
               "step": 4
             },
             {
-              "expr": "sum (irate(api_request_total{code=~\"^4..$\"}[1m]))",
+              "expr": "sum (irate(http_request_duration_seconds_count{status_code=~\"^4..$\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "4XX Errors Rate",
@@ -553,10 +553,18 @@
               "step": 2
             },
             {
-              "expr": "sum (irate(api_request_total{code=~\"^2..$\"}[1m]))",
+              "expr": "sum (irate(http_request_duration_seconds_count{status_code=~\"^2..$\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "2XX Success Rate",
+              "refId": "D",
+              "step": 2
+            },
+            {
+              "expr": "sum (irate(http_request_duration_seconds_count{status_code=~\"^3..$\"}[1m]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "3XX Success Rate",
               "refId": "D",
               "step": 2
             }
@@ -629,7 +637,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum by(method) (irate(api_request_total[1m]))",
+              "expr": "sum by(method) (rate(http_request_duration_seconds_sum[1m]))",
               "format": "time_series",
               "intervalFactor": 10,
               "refId": "A",
@@ -716,7 +724,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "(\n  sum(irate(api_request_duration_milliseconds_bucket{le=\"25\",code=~\"^2..$\"}[1m]))\n+\n  (sum(irate(api_request_duration_milliseconds_bucket{le=\"100\",code=~\"^2..$\"}[1m]))/2)\n) / sum(irate(api_request_duration_milliseconds_count[1m]))",
+              "expr": "(\n  sum(irate(http_request_duration_seconds_bucket{le=\"1.5\",status_code=~\"^2..$\"}[1m]))\n+\n  (sum(irate(http_request_duration_seconds_bucket{le=\"10\",status_code=~\"^2..$\"}[1m]))/2)\n) / sum(irate(http_request_duration_seconds_bucket[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -727,7 +735,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Apdex Score: target 25ms, tolerated: 100ms",
+          "title": "Apdex Score: target 1.5ms, tolerated: 10ms",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -794,35 +802,59 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "( sum(irate(api_request_duration_milliseconds_bucket{le=\"5\"}[1m])) /  sum(irate(api_request_duration_milliseconds_count[1m])) ) * 100",
+              "expr": "( sum(irate(http_request_duration_seconds_bucket{le=\"+inf\"}[1m])) /  sum(irate(http_request_duration_seconds_bucket[1m])) ) * 100",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "Duration < 5ms (%)",
+              "legendFormat": "Duration < 1ms (%)",
               "refId": "A",
               "step": 2
             },
             {
-              "expr": "( sum(irate(api_request_duration_milliseconds_bucket{le=\"10\"}[1m])) /  sum(irate(api_request_duration_milliseconds_count[1m])) ) * 100",
+              "expr": "( sum(irate(http_request_duration_seconds_bucket{le=\"0.003\"}[1m])) /  sum(irate(http_request_duration_seconds_bucket[1m])) ) * 100",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "Duration < 10ms (%)",
+              "legendFormat": "Duration < 3ms (%)",
               "refId": "B",
               "step": 2
             },
             {
-              "expr": "( sum(irate(api_request_duration_milliseconds_bucket{le=\"50\"}[1m])) /  sum(irate(api_request_duration_milliseconds_count[1m])) ) * 100",
+              "expr": "( sum(irate(http_request_duration_seconds_bucket{le=\"0.03\"}[1m])) /  sum(irate(http_request_duration_seconds_bucket[1m])) ) * 100",
               "format": "time_series",
               "intervalFactor": 2,
-              "legendFormat": "Duration < 50ms (%)",
+              "legendFormat": "Duration < 30ms (%)",
               "refId": "C",
               "step": 2
             },
             {
-              "expr": "( sum(irate(api_request_duration_milliseconds_bucket{le=\"100\"}[1m])) /  sum(irate(api_request_duration_milliseconds_count[1m])) ) * 100",
+              "expr": "( sum(irate(http_request_duration_seconds_bucket{le=\"0.1\"}[1m])) /  sum(irate(http_request_duration_seconds_bucket[1m])) ) * 100",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "Duration < 100ms (%)",
               "refId": "D",
+              "step": 2
+            },
+            {
+              "expr": "( sum(irate(http_request_duration_seconds_bucket{le=\"0.3\"}[1m])) /  sum(irate(http_request_duration_seconds_bucket[1m])) ) * 100",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "Duration < 300ms (%)",
+              "refId": "E",
+              "step": 2
+            },
+            {
+              "expr": "( sum(irate(http_request_duration_seconds_bucket{le=\"1.5\"}[1m])) /  sum(irate(http_request_duration_seconds_bucket[1m])) ) * 100",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "Duration < 1500ms (%)",
+              "refId": "F",
+              "step": 2
+            },
+            {
+              "expr": "( sum(irate(http_request_duration_seconds_bucket{le=\"10\"}[1m])) /  sum(irate(http_request_duration_seconds_bucket[1m])) ) * 100",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "Duration < 10000ms (%)",
+              "refId": "G",
               "step": 2
             }
           ],
@@ -906,7 +938,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "topk(3, sum(irate(api_request_total[1m])) by (path))",
+              "expr": "topk(10,max_over_time(http_request_duration_seconds_count[6s])- min_over_time(http_request_duration_seconds_count[24h]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -917,7 +949,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 3 API calls (by path)",
+          "title": "Top 10 API calls (by path) In Last 24 hours",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -987,18 +1019,26 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "topk(3, sum(irate(api_request_total{code=~\"^5..$\"}[1m])) by (path))",
+              "expr": "topk(10,max_over_time(http_request_duration_seconds_count{code=~\"^5..$\"}[6s])- min_over_time(http_request_duration_seconds_count{code=~\"^5..$\"}[24h]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
+              "step": 2
+            },
+            {
+              "expr": "topk(10,max_over_time(http_request_duration_seconds_count{code=~\"^4..$\"}[6s])- min_over_time(http_request_duration_seconds_count{code=~\"^4..$\"}[24h]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "",
+              "refId": "B",
               "step": 2
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Top 3 API Error Calls ( 5XX, by path)",
+          "title": "Top 3 API Error Calls ( 5XX and 4XX, by path)",
           "tooltip": {
             "shared": true,
             "sort": 0,
