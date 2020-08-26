@@ -39,8 +39,10 @@ Clone this repository on your Docker host, cd into dockprom directory and run co
 git clone https://github.com/stefanprodan/dockprom
 cd dockprom
 
-ADMIN_USER=admin ADMIN_PASSWORD=admin docker-compose up -d
+sudo ADMIN_USER=admin ADMIN_PASSWORD=admin docker-compose up -d
 ```
+
+**NOTE: Replace with actual password and username on the production machine**
 
 Prerequisites:
 
